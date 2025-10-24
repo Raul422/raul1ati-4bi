@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Clone</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fab fa-spotify"></i>
+                <h2>Spotify Clone</h2>
+            </div>
+            <ul class="nav-links">
+                <li onclick="mudarAba('inicio')" class="aba-ativa" id="nav-inicio">
+                    <i class="fas fa-home"></i> Início
+                </li>
+                <li onclick="mudarAba('buscar')" id="nav-buscar">
+                    <i class="fas fa-search"></i> Buscar
+                </li>
+                <li onclick="mudarAba('biblioteca')" id="nav-biblioteca">
+                    <i class="fas fa-book"></i> Biblioteca
+                </li>
+                <li onclick="mudarAba('podcasts')" id="nav-podcasts">
+                    <i class="fas fa-podcast"></i> Podcasts
+                </li>
+                <li onclick="mudarAba('playlists')" id="nav-playlists">
+                    <i class="fas fa-list"></i> Playlists
+                </li>
+            </ul>
+            <div class="playlists">
+                <h3>Playlists</h3>
+                <ul>
+                    <li>Rock Clássico</li>
+                    <li>Pop Hits</li>
+                    <li>Jazz Suave</li>
+                </ul>
+            </div>
+        </nav>
+        <main class="content">
+            <!-- Seção Início -->
+            <div id="secao-inicio" class="secao-conteudo">
+                <header>
+                    <div class="user-controls">
+                        <div class="nav-buttons">
+                            <button><i class="fas fa-chevron-left"></i></button>
+                            <button><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                        <div class="user-profile">
+                            <img src="https://i.pravatar.cc/32" alt="User">
+                            <span>Usuário</span>
+                        </div>
+                    </div>
+                </header>
+                <section class="featured">
+                    <h1>Descobertas da Semana</h1>
+                    <div class="featured-sections">
+                        <div class="section-card">
+                            <h2>Top Brasil</h2>
+                            <div id="lista-brasil"></div>
+                        </div>
+                        <div class="section-card">
+                            <h2>Top Global</h2>
+                            <div id="lista-global"></div>
+                        </div>
+                    </div>
+
+                    <h2 class="section-title">Álbuns do Momento</h2>
+                    <div class="album-grid" id="albums-grid"></div>
+
+                    <h2 class="section-title">Mais Tocadas</h2>
+                    <div id="lista-de-musicas"></div>
+                </section>
+            </div>
+
+            <!-- Seção Buscar -->
+            <div id="secao-buscar" class="secao-conteudo" style="display: none;">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="O que você quer ouvir?" onkeyup="buscarMusicas(this.value)">
+                </div>
+                <div id="resultados-busca"></div>
+            </div>
+
+            <!-- Seção Biblioteca -->
+            <div id="secao-biblioteca" class="secao-conteudo" style="display: none;">
+                <h1>Sua Biblioteca</h1>
+                <div class="biblioteca-grid" id="biblioteca-grid"></div>
+            </div>
+        </main>
+    </div>
+    <footer class="player">
+        <div class="now-playing">
+            <img src="" alt="" id="current-song-image">
+            <div class="track-info">
+                <h4 id="current-song-title"></h4>
+                <p id="current-song-artist"></p>
+            </div>
+        </div>
+        <div class="controls">
+            <button><i class="fas fa-random"></i></button>
+            <button><i class="fas fa-step-backward"></i></button>
+            <button class="play-btn"><i class="fas fa-play"></i></button>
+            <button><i class="fas fa-step-forward"></i></button>
+            <button><i class="fas fa-redo"></i></button>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
