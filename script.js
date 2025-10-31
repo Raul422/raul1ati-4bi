@@ -1,3 +1,266 @@
+// Estrutura de playlists
+let playlists = JSON.parse(localStorage.getItem('playlists')) || [];
+let playlistAtualId = null;
+
+// Inicialização das playlists ao carregar a página
+window.addEventListener('load', () => {
+    inicializarPlaylists();
+});
+
+function inicializarPlaylists() {
+    atualizarListaPlaylists();
+    atualizarTodasMusicas();
+    
+    // Se estiver na aba de playlists, mostrar a primeira playlist ou interface de criação
+    if (document.getElementById('secao-playlists').style.display !== 'none') {
+        if (playlists.length > 0) {
+            playlistAtualId = playlists[0].id;
+            mostrarPlaylist(playlistAtualId);
+        } else {
+            mostrarPlaylist(null);
+        }
+    }
+}
+
+// Função para atualizar a lista de todas as músicas disponíveis
+function atualizarTodasMusicas() {
+    const container = document.getElementById('todas-musicas');
+    if (!container) return;
+
+    const todasMusicas = obterTodasMusicas();
+    container.innerHTML = todasMusicas.map(musica => `
+        <div class="musica-item">
+            <div class="musica-info">
+                <img src="${musica.capaUrl}" alt="${musica.titulo}" class="mini-capa">
+                <div>
+                    <div class="musica-titulo">${musica.titulo}</div>
+                    <div class="musica-artista">${musica.artista} - ${musica.album}</div>
+                </div>
+            </div>
+            ${playlistAtualId ? `
+                <button onclick='adicionarMusicaPlaylist("${playlistAtualId}", ${JSON.stringify(JSON.stringify(musica))})' 
+                        class="btn-adicionar" title="Adicionar à playlist atual">
+                    <i class="fas fa-plus"></i>
+                </button>
+            ` : ''}
+        </div>
+    `).join('');
+}
+
+// Função para obter todas as músicas dos álbuns
+function obterTodasMusicas() {
+    return albuns.reduce((todas, album) => {
+        const musicasDoAlbum = album.musicas.map(musica => ({
+            ...musica,
+            artista: album.artista,
+            album: album.titulo,
+            capaUrl: album.capaUrl
+        }));
+        return [...todas, ...musicasDoAlbum];
+    }, []);
+}
+
+// Funções de gerenciamento de playlists
+function criarNovaPlaylist() {
+    const input = document.getElementById('nova-playlist-nome');
+    const nome = input.value.trim();
+    if (nome) {
+        const novaPlaylist = {
+            id: Date.now().toString(),
+            nome: nome,
+            musicas: []
+        };
+        playlists.push(novaPlaylist);
+        playlistAtualId = novaPlaylist.id;
+        salvarPlaylists();
+        input.value = '';
+        selecionarPlaylist(novaPlaylist.id);
+        
+        // Mostrar mensagem de sucesso
+        const header = document.querySelector('.playlist-header');
+        const msg = document.createElement('div');
+        msg.className = 'success-message';
+        msg.textContent = `Playlist "${nome}" criada com sucesso!`;
+        header.appendChild(msg);
+        setTimeout(() => msg.remove(), 3000);
+    }
+}
+
+function adicionarMusicaPlaylist(playlistId, musicaStr) {
+    try {
+        const musica = JSON.parse(musicaStr);
+        const playlist = playlists.find(p => p.id === playlistId);
+        if (playlist && !playlist.musicas.some(m => m.titulo === musica.titulo)) {
+            playlist.musicas.push(musica);
+            salvarPlaylists();
+            mostrarPlaylist(playlistId);
+        }
+    } catch (error) {
+        console.error('Erro ao adicionar música:', error);
+    }
+}
+
+function removerMusicaPlaylist(playlistId, index) {
+    const playlist = playlists.find(p => p.id === playlistId);
+    if (playlist && playlist.musicas[index]) {
+        playlist.musicas.splice(index, 1);
+        salvarPlaylists();
+        mostrarPlaylist(playlistId);
+    }
+}
+
+function salvarPlaylists() {
+    localStorage.setItem('playlists', JSON.stringify(playlists));
+    atualizarListaPlaylists();
+}
+
+function atualizarListaPlaylists() {
+    const playlistList = document.getElementById('playlist-list');
+    if (playlistList) {
+        playlistList.innerHTML = playlists.map(playlist => `
+            <li onclick="selecionarPlaylist('${playlist.id}')" 
+                class="${playlist.id === playlistAtualId ? 'active' : ''}">
+                <i class="fas fa-music"></i> ${playlist.nome}
+            </li>
+        `).join('');
+    }
+}
+
+function selecionarPlaylist(id) {
+    playlistAtualId = id;
+    mostrarPlaylist(id);
+    // Atualiza visual da lista de playlists
+    document.querySelectorAll('#playlist-list li').forEach(li => {
+        li.classList.remove('active');
+        if (li.onclick.toString().includes(id)) {
+            li.classList.add('active');
+        }
+    });
+    // Atualiza todas as músicas para mostrar botões de adicionar
+    atualizarTodasMusicas();
+}
+
+function mostrarPlaylist(playlistId) {
+    const container = document.getElementById('playlist-atual');
+    if (!container) return;
+
+    const playlist = playlists.find(p => p.id === playlistId);
+    
+    if (playlist) {
+        container.innerHTML = `
+            <div class="playlist-info">
+                <h2>${playlist.nome}</h2>
+                <p>${playlist.musicas.length} músicas</p>
+            </div>
+            
+            ${playlist.musicas.length > 0 ? `
+                <div class="playlist-musicas">
+                    ${playlist.musicas.map((musica, index) => `
+                        <div class="musica-item">
+                            <div class="musica-info">
+                                <img src="${musica.capaUrl}" alt="${musica.album}" class="mini-capa">
+                                <div>
+                                    <div class="musica-titulo">${musica.titulo}</div>
+                                    <div class="musica-artista">${musica.artista}</div>
+                                </div>
+                            </div>
+                            <button onclick="removerMusicaPlaylist('${playlistId}', ${index})" class="btn-remover" title="Remover da playlist">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : `
+                <div class="no-musicas">
+                    <i class="fas fa-music"></i>
+                    <p>Nenhuma música adicionada ainda</p>
+                    <p>Adicione músicas da lista abaixo</p>
+                </div>
+            `}
+            
+            <div class="section-divider"></div>
+            
+            <div id="todas-musicas-container">
+                <h3>Adicionar Músicas</h3>
+                <div id="todas-musicas" class="musicas-grid">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Carregando músicas...</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Atualiza a lista de todas as músicas disponíveis
+        setTimeout(atualizarTodasMusicas, 100); // Pequeno delay para melhor UX
+    } else {
+        container.innerHTML = `
+            <div class="no-playlists">
+                <i class="fas fa-music"></i>
+                <h2>Comece uma Nova Playlist</h2>
+                <p>Digite um nome para sua playlist no campo acima e clique em "Criar Playlist"</p>
+            </div>
+        `;
+    }
+}
+
+function mudarAba(aba) {
+    // Remove classe ativa de todas as abas
+    document.querySelectorAll('.nav-links li').forEach(item => {
+        item.classList.remove('aba-ativa');
+    });
+    
+    // Adiciona classe ativa na aba selecionada
+    const navItem = document.getElementById('nav-' + aba);
+    if (navItem) {
+        navItem.classList.add('aba-ativa');
+    }
+
+    // Esconde todas as seções
+    document.querySelectorAll('.secao-conteudo').forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Mostra a seção selecionada
+    const secao = document.getElementById('secao-' + aba);
+    if (secao) {
+        secao.style.display = 'block';
+        
+        // Se for a aba de playlists, mostra a primeira playlist ou interface de criação
+        if (aba === 'playlists') {
+            mostrarPlaylist(playlists.length > 0 ? playlists[0].id : null);
+        }
+    }
+}
+
+// Função para adicionar opção de adicionar à playlist em cada música
+function adicionarBotaoPlaylist(musicaElement, musica) {
+    const playlistsDropdown = document.createElement('div');
+    playlistsDropdown.className = 'playlist-dropdown';
+    playlistsDropdown.innerHTML = `
+        <button class="add-to-playlist">
+            <i class="fas fa-plus"></i> Adicionar à Playlist
+        </button>
+        <div class="playlist-options">
+            ${playlists.map(playlist => `
+                <div onclick="adicionarMusicaPlaylist('${playlist.id}', ${JSON.stringify(musica)})">
+                    ${playlist.nome}
+                </div>
+            `).join('')}
+        </div>
+    `;
+    musicaElement.appendChild(playlistsDropdown);
+}
+
+// Atualizar funções existentes para incluir botão de playlist
+function criarElementoMusica(musica) {
+    const div = document.createElement('div');
+    div.className = 'musica';
+    div.innerHTML = `<span>${musica.titulo}</span>`;
+    adicionarBotaoPlaylist(div, musica);
+    return div;
+}
+
 // Banco de dados de músicas e álbuns
 const albuns = [
     {

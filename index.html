@@ -90,6 +90,41 @@
                 <h1>Sua Biblioteca</h1>
                 <div class="biblioteca-grid" id="biblioteca-grid"></div>
             </div>
+
+            <!-- Seção Playlists -->
+            <div id="secao-playlists" class="secao-conteudo" style="display: none;">
+                <div class="playlist-header">
+                    <h1>Suas Playlists</h1>
+                    <div class="criar-playlist">
+                        <input type="text" id="nova-playlist-nome" placeholder="Nome da nova playlist">
+                        <button onclick="criarNovaPlaylist()">Criar Playlist</button>
+                    </div>
+                </div>
+
+                <div class="playlists-overview">
+                    <!-- Lista de playlists à esquerda -->
+                    <div class="playlists-sidebar">
+                        <h3>Suas Playlists</h3>
+                        <ul id="playlist-list">
+                            <!-- Lista de playlists será inserida aqui via JavaScript -->
+                        </ul>
+                    </div>
+
+                    <!-- Conteúdo da playlist à direita -->
+                    <div class="playlist-content">
+                        <div id="playlist-atual">
+                            <!-- Conteúdo da playlist atual será inserido aqui -->
+                        </div>
+                        
+                        <div id="todas-musicas-container">
+                            <h3>Todas as Músicas Disponíveis</h3>
+                            <div id="todas-musicas" class="musicas-grid">
+                                <!-- Lista de todas as músicas será inserida aqui -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
     <footer class="player">

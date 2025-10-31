@@ -16,6 +16,319 @@ body {
     height: calc(100vh - 90px);
 }
 
+/* Estilos para playlists */
+.playlist-header {
+    padding: 20px;
+    background: #282828;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.criar-playlist {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.criar-playlist input {
+    flex: 1;
+    max-width: 300px;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    background: #333;
+    color: white;
+    font-size: 14px;
+}
+
+/* Nova estrutura de playlists */
+.playlists-overview {
+    display: flex;
+    gap: 20px;
+    padding: 0 20px;
+    height: calc(100vh - 250px);
+}
+
+.playlists-sidebar {
+    width: 250px;
+    background: #282828;
+    border-radius: 8px;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.playlists-sidebar h3 {
+    margin-bottom: 15px;
+    color: #fff;
+    font-size: 16px;
+}
+
+#playlist-list {
+    list-style: none;
+    padding: 0;
+}
+
+#playlist-list li {
+    padding: 10px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    color: #b3b3b3;
+    transition: all 0.2s ease;
+}
+
+#playlist-list li:hover {
+    background: #333;
+    color: white;
+}
+
+#playlist-list li.active {
+    background: #333;
+    color: #1db954;
+}
+
+.playlist-content {
+    flex: 1;
+    background: #282828;
+    border-radius: 8px;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.musicas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.criar-playlist button {
+    padding: 12px 24px;
+    background: #1db954;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.criar-playlist button:hover {
+    background: #1ed760;
+    transform: translateY(-1px);
+}
+
+.criar-playlist-message {
+    text-align: center;
+    padding: 40px;
+    background: #282828;
+    border-radius: 8px;
+    margin: 20px;
+}
+
+.criar-playlist-message h2 {
+    margin-bottom: 10px;
+    color: white;
+}
+
+.criar-playlist-message p {
+    color: #b3b3b3;
+}
+
+.playlist-content {
+    padding: 20px;
+}
+
+.playlist-musicas, .todas-musicas {
+    margin: 15px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.musica-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: #282828;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.musica-item:hover {
+    background: #333;
+    transform: translateX(2px);
+}
+
+.musica-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+}
+
+.mini-capa {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.musica-titulo {
+    font-weight: 500;
+    color: white;
+    margin-bottom: 4px;
+}
+
+.musica-artista {
+    font-size: 0.9em;
+    color: #b3b3b3;
+}
+
+.btn-remover, .btn-adicionar {
+    background: none;
+    border: none;
+    color: #b3b3b3;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    margin-left: 10px;
+}
+
+.btn-remover:hover {
+    color: #ff4444;
+    background: rgba(255, 68, 68, 0.1);
+}
+
+.btn-adicionar:hover {
+    color: #1db954;
+    background: rgba(29, 185, 84, 0.1);
+}
+
+.playlist-container {
+    margin: 20px;
+    background: #181818;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.playlist-container h2 {
+    padding: 20px;
+    margin: 0;
+    border-bottom: 1px solid #282828;
+}
+
+.playlist-container h3 {
+    margin: 20px 20px 10px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Mensagens de feedback */
+.success-message {
+    background: #1db95433;
+    color: #1db954;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-top: 10px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Estilização adicional para os itens de música */
+.musica-item {
+    background: #333;
+    padding: 12px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+}
+
+.musica-item:hover {
+    background: #404040;
+    transform: translateX(5px);
+}
+
+.musica-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.mini-capa {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.musica-titulo {
+    font-weight: 500;
+    color: #fff;
+}
+
+.musica-artista {
+    font-size: 0.9em;
+    color: #b3b3b3;
+}
+
+.btn-adicionar, .btn-remover {
+    background: none;
+    border: none;
+    color: #b3b3b3;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.btn-adicionar:hover {
+    color: #1db954;
+    background: rgba(29, 185, 84, 0.1);
+}
+
+.btn-remover:hover {
+    color: #ff4444;
+    background: rgba(255, 68, 68, 0.1);
+}
+
+/* Estilo para quando não há playlists */
+.no-playlists {
+    text-align: center;
+    padding: 40px;
+    color: #b3b3b3;
+}
+
+.no-playlists i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #1db954;
+}
+
+/* Divisor entre seções */
+.section-divider {
+    height: 1px;
+    background: #404040;
+    margin: 20px 0;
+}
+
+/* Loading estado */
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #b3b3b3;
+}
+
 .sidebar {
     width: 230px;
     background-color: #000;
