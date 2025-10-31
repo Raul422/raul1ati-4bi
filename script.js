@@ -28,7 +28,12 @@ function atualizarTodasMusicas() {
     if (!container) return;
 
     const todasMusicas = obterTodasMusicas();
-    container.innerHTML = todasMusicas.map(musica => `
+    const encoded = todasMusicas.map(m => ({
+        ...m,
+        __encoded: encodeURIComponent(JSON.stringify(m))
+    }));
+
+    container.innerHTML = encoded.map(musica => `
         <div class="musica-item">
             <div class="musica-info">
                 <img src="${musica.capaUrl}" alt="${musica.titulo}" class="mini-capa">
@@ -38,13 +43,21 @@ function atualizarTodasMusicas() {
                 </div>
             </div>
             ${playlistAtualId ? `
-                <button onclick='adicionarMusicaPlaylist("${playlistAtualId}", ${JSON.stringify(JSON.stringify(musica))})' 
-                        class="btn-adicionar" title="Adicionar à playlist atual">
+                <button data-music="${musica.__encoded}" data-playlist="${playlistAtualId}" class="btn-adicionar" title="Adicionar à playlist atual">
                     <i class="fas fa-plus"></i>
                 </button>
             ` : ''}
         </div>
     `).join('');
+
+    // Delegation para os botões adicionar
+    container.querySelectorAll('.btn-adicionar').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const encodedStr = btn.getAttribute('data-music');
+            const pid = btn.getAttribute('data-playlist');
+            if (encodedStr && pid) adicionarMusicaPlaylist(pid, decodeURIComponent(encodedStr));
+        });
+    });
 }
 
 // Função para obter todas as músicas dos álbuns
@@ -86,14 +99,16 @@ function criarNovaPlaylist() {
     }
 }
 
-function adicionarMusicaPlaylist(playlistId, musicaStr) {
+function adicionarMusicaPlaylist(playlistId, musicaData) {
     try {
-        const musica = JSON.parse(musicaStr);
+        const musica = typeof musicaData === 'string' ? JSON.parse(musicaData) : musicaData;
         const playlist = playlists.find(p => p.id === playlistId);
-        if (playlist && !playlist.musicas.some(m => m.titulo === musica.titulo)) {
+        if (!playlist) return;
+        if (!playlist.musicas.some(m => m.titulo === musica.titulo && m.artista === musica.artista)) {
             playlist.musicas.push(musica);
             salvarPlaylists();
             mostrarPlaylist(playlistId);
+            atualizarTodasMusicas();
         }
     } catch (error) {
         console.error('Erro ao adicionar música:', error);
@@ -237,18 +252,24 @@ function mudarAba(aba) {
 function adicionarBotaoPlaylist(musicaElement, musica) {
     const playlistsDropdown = document.createElement('div');
     playlistsDropdown.className = 'playlist-dropdown';
-    playlistsDropdown.innerHTML = `
-        <button class="add-to-playlist">
-            <i class="fas fa-plus"></i> Adicionar à Playlist
-        </button>
-        <div class="playlist-options">
-            ${playlists.map(playlist => `
-                <div onclick="adicionarMusicaPlaylist('${playlist.id}', ${JSON.stringify(musica)})">
-                    ${playlist.nome}
-                </div>
-            `).join('')}
-        </div>
-    `;
+    const btn = document.createElement('button');
+    btn.className = 'add-to-playlist';
+    btn.innerHTML = '<i class="fas fa-plus"></i> Adicionar à Playlist';
+
+    const options = document.createElement('div');
+    options.className = 'playlist-options';
+
+    playlists.forEach(p => {
+        const opt = document.createElement('div');
+        opt.textContent = p.nome;
+        opt.addEventListener('click', () => {
+            adicionarMusicaPlaylist(p.id, musica);
+        });
+        options.appendChild(opt);
+    });
+
+    playlistsDropdown.appendChild(btn);
+    playlistsDropdown.appendChild(options);
     musicaElement.appendChild(playlistsDropdown);
 }
 
